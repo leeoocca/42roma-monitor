@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crea Annuncio</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/announcement.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Crea Annuncio</h1>
+            <a href="{{ url_for('edit_announcements') }}" class="back-btn">Modifica i tuoi annunci</a>
+        </div>
+        <div class="content-wrapper">
+            <div class="form-section">
+                <form method="POST" action="{{ url_for('create_announcement') }}">
+                    <div class="form-group">
+                        <label for="title">Title</label>
+                        <input type="text" class="form-control" id="title" name="title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="start_date">Start Date</label>
+                        <input type="datetime-local" class="form-control" id="start_date" name="start_date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="end_date">End Date</label>
+                        <input type="datetime-local" class="form-control" id="end_date" name="end_date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="5" required maxlength="350"></textarea>
+                        <small class="form-text text-muted">Max 350 caratteri</small>
+                    </div>
+                    {% if session.get('user_kind') == 'admin' %}
+                    <div class="form-group">
+                        <label for="link">Link (opzionale)</label>
+                        <input type="url" class="form-control" id="link" name="link" placeholder="https://...">
+                    </div>
+                    {% endif %}
+                    <div class="form-group">
+                        <label for="color">Background Color</label>
+                        <input type="color" class="form-control form-control-color" id="color" name="color" value="#3e3e60" title="Choose announcement background color" onchange="updateColorPreview(this.value)">
+                        <div id="colorPreview" style="width:100%;height:40px;border-radius:0.5rem;margin-top:0.5rem;background-color:#3e3e60;"></div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create Announcement</button>
+                </form>
+            </div>
+            <div class="preview-section">
+                <h2>Anteprima Annuncio</h2>
+                <div class="event-carousel">
+                    <div class="event-slider" id="previewSlider">
+                        <div class="event-card" id="previewCard">
+                            <h4 class="event-title" id="previewTitle">Titolo Annuncio</h4>
+                            <p class="event-description" id="previewDescription">
+                                Descrizione dell'annuncio
+                            </p>
+                            {% if session.get('user_kind') == 'admin' %}
+                            <div class="qr-code-container" id="qrCodeContainer" style="display: none;"></div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    let qrcode = null;
+
+    function updateColorPreview(color) {
+        document.getElementById('colorPreview').style.backgroundColor = color;
+        document.getElementById('previewCard').style.backgroundColor = color;
+    }
+
+    function generateQRCode(url) {
+        const container = document.getElementById('qrCodeContainer');
+        if (!container) return; // Exit if container doesn't exist (non-admin user)
+        
+        container.innerHTML = ''; // Clear previous QR code
+        
+        if (url) {
+            qrcode = new QRCode(container, {
+                text: url,
+                width: 20,
+                height: 20,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+            container.style.display = 'flex';
+        } else {
+            container.style.display = 'none';
+        }
+    }
+
+    function updatePreview() {
+        const title = document.getElementById('title').value || 'Titolo Annuncio';
+        const description = document.getElementById('description').value || 'Descrizione dell\'annuncio';
+        const color = document.getElementById('color').value;
+        const linkInput = document.getElementById('link');
+        
+        document.getElementById('previewTitle').textContent = title;
+        document.getElementById('previewDescription').textContent = description;
+        document.getElementById('previewCard').style.backgroundColor = color;
+
+        if (linkInput && linkInput.value) {
+            generateQRCode(linkInput.value);
+        } else {
+            const qrContainer = document.getElementById('qrCodeContainer');
+            if (qrContainer) {
+                qrContainer.style.display = 'none';
+            }
+        }
+    }
+
+    // Mostra il colore di default all'apertura
+    document.addEventListener('DOMContentLoaded', function() {
+        updateColorPreview(document.getElementById('color').value);
+        
+        // Aggiungi event listeners per aggiornare la preview
+        document.getElementById('title').addEventListener('input', updatePreview);
+        document.getElementById('description').addEventListener('input', updatePreview);
+        document.getElementById('color').addEventListener('input', updatePreview);
+        
+        const linkInput = document.getElementById('link');
+        if (linkInput) {
+            linkInput.addEventListener('input', updatePreview);
+        }
+    });
+</script>
+</html> 

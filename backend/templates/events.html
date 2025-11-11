@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eventi</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/events.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Eventi dei prossimi 7 giorni</h1>
+        <div class="events-list">
+            {% for event in events %}
+            <div class="event-item">
+                <h3>{{ event.name }}</h3>
+                <p><strong>Data Inizio:</strong> {{ event.formatted_begin_at }}</p>
+                <p><strong>Durata:</strong> {{ event.duration }}</p>
+                <p>{{ event.description }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        <!-- Pulsante Home più elegante -->
+        <a class="home-button" href="{{ url_for('home') }}">Torna alla Home</a>
+    </div>
+</body>
+</html>

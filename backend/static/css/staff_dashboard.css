@@ -1,0 +1,85 @@
+:root {
+    --bg-dark: #1e1e2f;
+    --bg-panel: #2a2a40;
+    --bg-box: #333350;
+    --bg-info: #444465;
+    --text-light: #ffffff;
+    --text-muted: #ccc;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    height: 100%;
+    background-color: var(--bg-dark);
+    font-family: 'Segoe UI', sans-serif;
+    color: var(--text-light);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.header h1 {
+    font-size: 2rem;
+    color: var(--text-light);
+}
+
+.back-btn {
+    background-color: var(--bg-info);
+    color: var(--text-light);
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    transition: background-color 0.3s ease;
+}
+
+.back-btn:hover {
+    background-color: #555575;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.dashboard-card {
+    background-color: var(--bg-box);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+    text-decoration: none;
+    color: var(--text-light);
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px);
+    background-color: var(--bg-info);
+}
+
+.dashboard-card h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.dashboard-card p {
+    color: var(--text-muted);
+    line-height: 1.5;
+}

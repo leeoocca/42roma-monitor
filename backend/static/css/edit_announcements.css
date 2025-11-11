@@ -1,0 +1,134 @@
+:root {
+    --bg-dark: #1e1e2f;
+    --bg-panel: #2a2a40;
+    --bg-box: #333350;
+    --bg-info: #444465;
+    --text-light: #ffffff;
+    --text-muted: #ccc;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    height: 100%;
+    background-color: var(--bg-dark);
+    font-family: 'Segoe UI', sans-serif;
+    color: var(--text-light);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.announcement-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.announcement-card {
+    background-color: var(--bg-box);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 250px;
+}
+
+.announcement-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--text-light);
+}
+
+.announcement-card p {
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+    line-height: 1.5;
+    flex: 1;
+    overflow-y: auto;
+    max-height: 150px;
+    padding-right: 0.5rem;
+}
+
+.announcement-card p::-webkit-scrollbar {
+    width: 6px;
+}
+
+.announcement-card p::-webkit-scrollbar-track {
+    background: var(--bg-box);
+    border-radius: 3px;
+}
+
+.announcement-card p::-webkit-scrollbar-thumb {
+    background: var(--bg-info);
+    border-radius: 3px;
+}
+
+.announcement-card p::-webkit-scrollbar-thumb:hover {
+    background: #555575;
+}
+
+.announcement-card .dates {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+    flex-shrink: 0;
+}
+
+.announcement-card .edit-btn {
+    background-color: var(--bg-info);
+    color: var(--text-light);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.announcement-card .edit-btn:hover {
+    background-color: #555575;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.header h1 {
+    font-size: 2rem;
+    color: var(--text-light);
+}
+
+.back-btn {
+    background-color: var(--bg-info);
+    color: var(--text-light);
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    transition: background-color 0.3s ease;
+}
+
+.back-btn:hover {
+    background-color: #555575;
+}
+
+.no-announcements {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 1.2rem;
+    margin-top: 2rem;
+}

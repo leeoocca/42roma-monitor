@@ -1,0 +1,148 @@
+/* Reset di base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #F1F1F1;
+    color: #333;
+    padding:  1.25em;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding:  1.25em;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #00BABC;
+    margin-bottom:  1.25em;
+}
+
+.menu {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.menu ul {
+    list-style: none;
+}
+
+.menu li {
+    display: inline-block;
+    margin: 0 15px;
+}
+
+.menu a {
+    text-decoration: none;
+    color: #173D7A;
+    font-size: 18px;
+    padding: 0.625em  1.25em;
+    background-color: #04809F;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.menu a:hover {
+    background-color: #00BABC;
+}
+
+.events-list {
+    margin-top: 30px;
+}
+
+.event-item {
+    margin-bottom:  1.25em;
+    padding: 15px;
+    background-color: #F8F8F8;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.event-item h3 {
+    color: #173D7A;
+    margin-bottom: 0.625em;
+}
+
+.event-item p {
+    color: #475B67;
+}
+
+.home-button {
+    display: block;
+    width: 100%;
+    text-align: center;
+    margin-top: 40px;
+}
+
+.home-button a {
+    text-decoration: none;
+    color: white;
+    background-color: #173D7A;
+    padding: 15px 30px;
+    border-radius: 5px;
+    font-size: 18px;
+    transition: background-color 0.3s ease;
+}
+
+.home-button a:hover {
+    background-color: #00BABC;
+}
+
+
+/* Nuovo colore per i link dei cluster */
+.map-link {
+    text-decoration: none;
+    color: #04809F; /* Un blu più chiaro per i cluster */
+    font-size: 18px;
+    padding: 0.625em  1.25em;
+    background-color: #00BABC;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.map-link:hover {
+    background-color: #173D7A; /* Un blu scuro quando passa sopra */
+}
+
+
+/* Layout per la mappa SVG */
+.map-container {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.map-svg {
+    width: 100%;
+    max-width: 800px; /* Imposta una larghezza massima */
+    height: auto;
+    border: 2px solid #04809F; /* Aggiunge un bordo per differenziare */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.home-button {
+    display: inline-block;
+    background-color: #173D7A;
+    color: white;
+    font-size: 18px;
+    padding: 0.75em 25px;
+    border-radius: 5px;
+    text-decoration: none;
+    text-align: center;
+    margin-top: 40px;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+.home-button:hover {
+    background-color: #00BABC;
+}

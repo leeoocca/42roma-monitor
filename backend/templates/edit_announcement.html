@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifica Annuncio</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/edit_announcement.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Modifica Annuncio</h1>
+        </div>
+
+        <div class="content-wrapper">
+            <div class="form-section">
+                <form method="POST">
+                    <div class="form-group">
+                        <label for="title">Titolo</label>
+                        <input type="text" class="form-control" id="title" name="title" value="{{ announcement.title }}" required oninput="updatePreview()">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="start_date">Data di inizio</label>
+                        <input type="datetime-local" class="form-control" id="start_date" name="start_date" value="{{ announcement.start_date }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="end_date">Data di fine</label>
+                        <input type="datetime-local" class="form-control" id="end_date" name="end_date" value="{{ announcement.end_date }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Descrizione</label>
+                        <textarea class="form-control" id="description" name="description" required oninput="updatePreview()">{{ announcement.description }}</textarea>
+                        <small class="form-text text-muted">
+                            Max 470 byte (Unicode conta di più). <span id="desc-bytes">0</span>/470 byte
+                        </small>
+                    </div>
+
+                    {% if session.get('user_kind') == 'admin' %}
+                    <div class="form-group">
+                        <label for="link">Link (opzionale)</label>
+                        <input type="url" class="form-control" id="link" name="link" value="{{ announcement.link if announcement.link else '' }}" placeholder="https://..." oninput="updatePreview()">
+                    </div>
+                    {% endif %}
+
+                    <div class="form-group">
+                        <label for="color">Colore di sfondo</label>
+                        <input type="color" class="form-control" id="color" name="color" value="{{ announcement.color }}" oninput="updateColorPreview(this.value)" onchange="updatePreview()">
+                        <div class="color-preview" id="colorPreview"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="button" class="btn btn-secondary" onclick="window.location.href='{{ url_for('edit_announcements') }}'">Annulla</button>
+                        <button type="submit" class="btn btn-primary">Salva modifiche</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="preview-section">
+                <h2>Anteprima Annuncio</h2>
+                <div class="event-card" id="previewCard">
+                    <h4 class="event-title" id="previewTitle">{{ announcement.title }}</h4>
+                    <p class="event-description" id="previewDescription">
+                        {{ announcement.description }}
+                    </p>
+                    {% if session.get('user_kind') == 'admin' %}
+                    <div class="qr-code-container" id="qrCodeContainer" style="display: {% if announcement.link %}flex{% else %}none{% endif %};"></div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let qrcode = null;
+
+        function updateColorPreview(color) {
+            document.getElementById('colorPreview').style.backgroundColor = color;
+        }
+
+        function updatePreview() {
+            const title = document.getElementById('title').value || 'Titolo Annuncio';
+            const description = document.getElementById('description').value || 'Descrizione dell\'annuncio';
+            const color = document.getElementById('color').value;
+            const linkInput = document.getElementById('link');
+            
+            document.getElementById('previewTitle').textContent = title;
+            document.getElementById('previewDescription').textContent = description;
+            document.getElementById('previewCard').style.backgroundColor = color;
+
+            if (linkInput && linkInput.value) {
+                generateQRCode(linkInput.value);
+            } else {
+                const qrContainer = document.getElementById('qrCodeContainer');
+                if (qrContainer) {
+                    qrContainer.style.display = 'none';
+                }
+            }
+        }
+
+        function generateQRCode(url) {
+            const container = document.getElementById('qrCodeContainer');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            if (url) {
+                qrcode = new QRCode(container, {
+                    text: url,
+                    width: 20,
+                    height: 20,
+                    colorDark: "#000000",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+                container.style.display = 'flex';
+            } else {
+                container.style.display = 'none';
+            }
+        }
+
+        const desc = document.getElementById('description');
+        const counter = document.getElementById('desc-bytes');
+        function updateCounter() {
+            const bytes = new Blob([desc.value]).size;
+            counter.textContent = bytes;
+            if (bytes > 470) {
+                desc.value = truncateToBytes(desc.value, 470);
+                counter.textContent = new Blob([desc.value]).size;
+            }
+        }
+        function truncateToBytes(str, maxBytes) {
+            let bytes = 0, i = 0;
+            for (; i < str.length; i++) {
+                bytes += new Blob([str[i]]).size;
+                if (bytes > maxBytes) break;
+            }
+            return str.slice(0, i);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCounter();
+            updatePreview();
+            
+            // Initialize QR code if there's a link
+            const linkInput = document.getElementById('link');
+            if (linkInput && linkInput.value) {
+                generateQRCode(linkInput.value);
+            }
+        });
+    </script>
+</body>
+</html> 

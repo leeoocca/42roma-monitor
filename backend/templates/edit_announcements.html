@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifica Annunci</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/edit_announcements.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>I tuoi annunci</h1>
+            <a href="{{ url_for('announcement_redirect') }}" class="back-btn">Torna indietro</a>
+        </div>
+
+        {% if announcements %}
+        <div class="announcement-list">
+            {% for announcement in announcements %}
+            <div class="announcement-card" style="background-color: {{ announcement.color }}">
+                <h3>{{ announcement.title }}</h3>
+                <p>{{ announcement.description }}</p>
+                <div class="dates">
+                    <div>Inizio: {{ announcement.start_date }}</div>
+                    <div>Fine: {{ announcement.end_date }}</div>
+                </div>
+                <button class="edit-btn" onclick="editAnnouncement('{{ announcement.id }}')">Modifica</button>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="no-announcements">
+            Non hai ancora creato nessun annuncio
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        function editAnnouncement(id) {
+            window.location.href = `/edit_announcement/${id}`;
+        }
+    </script>
+</body>
+</html> 

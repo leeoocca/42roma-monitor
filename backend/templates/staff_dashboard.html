@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Dashboard - Monitor 42Roma</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/staff_dashboard.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Staff Dashboard</h1>
+            <a href="{{ url_for('map') }}" class="back-btn">Torna alla Dashboard</a>
+        </div>
+        <div class="dashboard-grid">
+            <a href="{{ url_for('staff_maintenance') }}" class="dashboard-card">
+                <h2>Gestione Manutenzione</h2>
+                <p>Gestisci i PC in manutenzione e monitora lo stato dei cluster</p>
+            </a>
+            <a href="{{ url_for('banner_management') }}" class="dashboard-card">
+                <h2>Gestione Banner</h2>
+                <p>Configura il banner di avviso nella dashboard</p>
+            </a>
+            <a href="{{ url_for('create_announcement') }}" class="dashboard-card">
+                <h2>Crea Annuncio</h2>
+                <p>Crea un nuovo annuncio da visualizzare nella dashboard</p>
+            </a>
+            <a href="{{ url_for('edit_announcements') }}" class="dashboard-card">
+                <h2>Modifica Annunci</h2>
+                <p>Modifica o elimina gli annunci esistenti</p>
+            </a>
+            <a href="{{ NAGIOS_URL }}" class="dashboard-card">
+                <h2>Nagios</h2>
+                <p>Verifica lo stato dei servizi</p>
+            </a>
+        </div>
+    </div>
+</body>
+</html> 

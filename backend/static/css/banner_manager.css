@@ -1,0 +1,139 @@
+:root {
+    --bg-dark: #1e1e2f;
+    --bg-panel: #2a2a40;
+    --bg-box: #333350;
+    --bg-info: #444465;
+    --text-light: #ffffff;
+    --text-muted: #ccc;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    height: 100%;
+    background-color: var(--bg-dark);
+    font-family: 'Segoe UI', sans-serif;
+    color: var(--text-light);
+}
+
+.container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.header h1 {
+    font-size: 2rem;
+    color: var(--text-light);
+}
+
+.back-btn {
+    background-color: var(--bg-info);
+    color: var(--text-light);
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    transition: background-color 0.3s ease;
+}
+
+.back-btn:hover {
+    background-color: #555575;
+}
+
+.banner-form {
+    background-color: var(--bg-box);
+    padding: 2rem;
+    border-radius: 1rem;
+    margin-bottom: 2rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-light);
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: var(--bg-panel);
+    border: 1px solid var(--bg-info);
+    border-radius: 0.5rem;
+    color: var(--text-light);
+    font-size: 1rem;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--text-light);
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.checkbox-group input[type="checkbox"] {
+    width: 1.2rem;
+    height: 1.2rem;
+}
+
+.preview {
+    background-color: var(--bg-panel);
+    padding: 2rem;
+    border-radius: 1rem;
+}
+
+.preview h2 {
+    margin-bottom: 1rem;
+    color: var(--text-light);
+}
+
+.banner-preview {
+    background-color: var(--color-offline);
+    color: var(--text-light);
+    text-align: center;
+    padding: 1em;
+    border-radius: 0.6em;
+    font-weight: bold;
+    box-shadow: 0 0 1em rgba(0, 0, 0, 0.4);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.banner-preview.hidden {
+    display: none;
+}
+
+.btn {
+    background-color: var(--bg-info);
+    color: var(--text-light);
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 1rem;
+}
+
+.btn:hover {
+    background-color: #555575;
+}
