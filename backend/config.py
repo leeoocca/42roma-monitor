@@ -46,3 +46,8 @@ NAGIOS_URL = os.getenv("NAGIOS_URL")
 
 # === Autorizzazioni ===
 AUTHORIZED_USERS = os.getenv("AUTHORIZED_USERS", "ffrau").split(",")
+
+# === Requests / SSL ===
+# When `REQUESTS_VERIFY` is true (default), `requests` will verify TLS certificates.
+# Set to `false` only for local development when using self-signed certs.
+REQUESTS_VERIFY = os.getenv("REQUESTS_VERIFY", "true").lower() == "true"

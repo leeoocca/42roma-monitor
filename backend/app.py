@@ -201,7 +201,7 @@ def map():
         ("events", GET_EVENTS, "events_data"),
     ]:
         try:
-            resp = requests.get(url, verify=False, timeout=5)
+            resp = requests.get(url, verify=config.REQUESTS_VERIFY, timeout=5)
             if resp.status_code == 200:
                 if label == "events":
                     data[key] = resp.json()
@@ -489,4 +489,3 @@ def toggle_maintenance():
 # === Main ===
 if __name__ == "__main__":
     app.run(host=HOST, port=PORT, ssl_context=(SSL_CERT_PATH, SSL_KEY_PATH), debug=True)
-
