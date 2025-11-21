@@ -24,8 +24,15 @@ from config import *
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # === Setup Flask ===
+# Read debug mode early so we can enforce secret requirements
+DEBUG_MODE = os.getenv("FLASK_DEBUG", "false").lower() == "true"
+
 app = Flask(__name__, static_folder="static")
-app.secret_key = os.getenv("FLASK_SECRET_KEY", secrets.token_hex(16))
+# Centralize secret management: require `FLASK_SECRET_KEY` in non-debug (production) mode.
+env_secret = os.getenv("FLASK_SECRET_KEY")
+if not env_secret and not DEBUG_MODE:
+    raise SystemExit("FLASK_SECRET_KEY must be set in production. Set FLASK_DEBUG=true for development or provide a secret.")
+app.secret_key = env_secret or secrets.token_hex(16)
 app.config.update(
     SESSION_PERMANENT=True,
     PERMANENT_SESSION_LIFETIME=timedelta(hours=24),
@@ -488,5 +495,9 @@ def toggle_maintenance():
 
 # === Main ===
 if __name__ == "__main__":
-    app.run(host=HOST, port=PORT, ssl_context=(SSL_CERT_PATH, SSL_KEY_PATH), debug=True)
-
+    app.run(
+        host=HOST,
+        port=PORT,
+        ssl_context=(SSL_CERT_PATH, SSL_KEY_PATH),
+        debug=DEBUG_MODE,
+    )
