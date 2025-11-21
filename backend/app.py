@@ -431,48 +431,38 @@ def update_banner():
     log_action(f"{session.get('user_login')} ha aggiornato il banner")
     return redirect(url_for("banner_management"))
 
+def staff_maintenance():
 @app.route('/maintenance')
 def staff_maintenance():
     if 'user_login' not in session:
         with open('log.txt', 'a') as f:
             f.write(f"{datetime.now().isoformat()} - Tentativo di accesso non autorizzato alla pagina staff da IP {request.remote_addr}\n")
-            return redirect(url_for('login'))
+        return redirect(url_for('login'))
     user_kind = session.get('user_kind')
     if user_kind != 'admin':
         with open('log.txt', 'a') as f:
             f.write(f"{datetime.now().isoformat()} - Tentativo di accesso non autorizzato alla pagina staff da {session.get('user_login')} (IP: {request.remote_addr})\n")
-            return "Unauthorized", 403
-    maintenance_pcs = []
-    if os.path.exists('maintenance.json'):
-        with open('maintenance.json', 'r') as f:
-            try:
-                maintenance_pcs = json.load(f)
-            except json.JSONDecodeError:
-                maintenance_pcs = []
+        return "Unauthorized", 403
+    maintenance_pcs = load_json(config.MAINTENANCE_FILE, default=[])
     return render_template('staff.html', maintenance_pcs=maintenance_pcs)
 
+def toggle_maintenance():
 @app.route('/toggle_maintenance', methods=['POST'])
 def toggle_maintenance():
     if 'user_login' not in session:
         with open('log.txt', 'a') as f:
             f.write(f"{datetime.now().isoformat()} - Tentativo di modifica manutenzione non autorizzato da IP {request.remote_addr}\n")
-            return redirect(url_for('login'))
+        return redirect(url_for('login'))
     user_kind = session.get('user_kind')
     if user_kind != 'admin':
         with open('log.txt', 'a') as f:
             f.write(f"{datetime.now().isoformat()} - Tentativo di modifica manutenzione non autorizzato da {session.get('user_login')} (IP: {request.remote_addr})\n")
-            return jsonify({"error": "Not authorized"}), 403
+        return jsonify({"error": "Not authorized"}), 403
     pc_id = request.form.get('pc_id')
     action = request.form.get('action', 'add')
     if not pc_id:
         return jsonify({"error": "No PC ID provided"}), 400
-    maintenance_pcs = []
-    if os.path.exists('maintenance.json'):
-        with open('maintenance.json', 'r') as f:
-            try:
-                maintenance_pcs = json.load(f)
-            except json.JSONDecodeError:
-                maintenance_pcs = []
+    maintenance_pcs = load_json(config.MAINTENANCE_FILE, default=[])
     if action == 'remove' and pc_id in maintenance_pcs:
         maintenance_pcs.remove(pc_id)
         with open('log.txt', 'a') as f:
@@ -481,12 +471,10 @@ def toggle_maintenance():
         maintenance_pcs.append(pc_id)
         with open('log.txt', 'a') as f:
             f.write(f"{datetime.now().isoformat()} - {session.get('user_login')} ha aggiunto {pc_id} alla manutenzione\n")
-    with open('maintenance.json', 'w') as f:
-        json.dump(maintenance_pcs, f)
+    save_json(config.MAINTENANCE_FILE, maintenance_pcs)
     return jsonify({"success": True, "maintenance_pcs": maintenance_pcs})
 
 
 # === Main ===
 if __name__ == "__main__":
     app.run(host=HOST, port=PORT, ssl_context=(SSL_CERT_PATH, SSL_KEY_PATH), debug=True)
-
