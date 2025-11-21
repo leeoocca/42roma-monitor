@@ -19,7 +19,7 @@ import requests
 import urllib3
 import yaml
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
-from config import *
+import config
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -51,7 +51,7 @@ def save_json(path, data):
         json.dump(data, f, indent=4)
 
 def log_action(msg):
-    with open(LOG_FILE, "a") as f:
+    with open(config.LOG_FILE, "a") as f:
         f.write(f"{datetime.now().isoformat()} - {msg}\n")
 
 def require_dashboard_access():
@@ -63,7 +63,7 @@ def require_dashboard_access():
         return None
 
     user_login = session.get("user_login")
-    if user_login not in AUTHORIZED_USERS:
+        if user_login not in config.AUTHORIZED_USERS:
         log_action(
             f"Accesso non autorizzato da {user_login or 'sconosciuto'} ({request.remote_addr})"
         )
@@ -77,7 +77,7 @@ def generate_announcement_id(length: int = 12) -> str:
 
 def list_announcements():
     announcements = []
-    for entry in ANNOUNCEMENTS_DIR.glob("*.json"):
+    for entry in config.ANNOUNCEMENTS_DIR.glob("*.json"):
         try:
             payload = load_json(entry)
             payload["id"] = entry.stem
@@ -88,12 +88,12 @@ def list_announcements():
     return announcements
 
 def save_announcement(announcement_id: str, data: dict) -> None:
-    ANNOUNCEMENTS_DIR.mkdir(parents=True, exist_ok=True)
-    target = ANNOUNCEMENTS_DIR / f"{announcement_id}.json"
+    config.ANNOUNCEMENTS_DIR.mkdir(parents=True, exist_ok=True)
+    target = config.ANNOUNCEMENTS_DIR / f"{announcement_id}.json"
     save_json(target, data)
 
 def load_announcement(announcement_id: str):
-    target = ANNOUNCEMENTS_DIR / f"{announcement_id}.json"
+    target = config.ANNOUNCEMENTS_DIR / f"{announcement_id}.json"
     if not target.exists():
         return None
     payload = load_json(target)
@@ -102,19 +102,19 @@ def load_announcement(announcement_id: str):
 
 # === OAuth ===
 AUTH_URL = (
-    f"{OAUTH_AUTHORIZE_URL}?client_id={OAUTH_CLIENT_ID}"
-    f"&redirect_uri={OAUTH_REDIRECT_URI}&response_type=code&scope=public"
+    f"{config.OAUTH_AUTHORIZE_URL}?client_id={config.OAUTH_CLIENT_ID}"
+    f"&redirect_uri={config.OAUTH_REDIRECT_URI}&response_type=code&scope=public"
 )
 
 def get_token():
     """Get client-credentials token from 42 API."""
     payload = {
         "grant_type": "client_credentials",
-        "client_id": OAUTH_CLIENT_ID,
-        "client_secret": OAUTH_CLIENT_SECRET,
+        "client_id": config.OAUTH_CLIENT_ID,
+        "client_secret": config.OAUTH_CLIENT_SECRET,
     }
     try:
-        resp = requests.post(OAUTH_TOKEN_URL, data=payload, timeout=10)
+            resp = requests.post(config.OAUTH_TOKEN_URL, data=payload, timeout=10)
         resp.raise_for_status()
         return resp.json().get("access_token")
     except requests.RequestException as e:
@@ -144,25 +144,25 @@ def get_filtered_events():
                             f"{(now + timedelta(days=EVENT_LOOKAHEAD_DAYS)).strftime('%Y-%m-%dT%H:%M:%S.000Z')}"
     }
     headers = {"Authorization": f"Bearer {token}"}
-    url = f"https://api.intra.42.fr/v2/campus/{CAMPUS_ID}/cursus/{CURSUS_ID}/events"
+        url = f"https://api.intra.42.fr/v2/campus/{config.CAMPUS_ID}/cursus/{config.CURSUS_ID}/events"
 
     try:
         resp = requests.get(url, headers=headers, params=params, timeout=10)
         resp.raise_for_status()
         events = [e for e in resp.json() if datetime.strptime(e["begin_at"], "%Y-%m-%dT%H:%M:%S.000Z") > now]
-        save_json(FUTURE_EVENTS_FILE, list(reversed(events)))
+        save_json(config.FUTURE_EVENTS_FILE, list(reversed(events)))
         return events
     except requests.RequestException as e:
         logger.error(f"Errore recupero eventi: {e}")
         return []
 
-events_data = load_json(FUTURE_EVENTS_FILE, default=get_filtered_events())
+events_data = load_json(config.FUTURE_EVENTS_FILE, default=get_filtered_events())
 
 # === Annunci ===
 def get_future_announcements():
     now = datetime.now()
     announcements = []
-    for file in ANNOUNCEMENTS_DIR.glob("*.json"):
+    for file in config.ANNOUNCEMENTS_DIR.glob("*.json"):
         ann = load_json(file)
         try:
             start, end = datetime.fromisoformat(ann["start_date"]), datetime.fromisoformat(ann["end_date"])
@@ -180,13 +180,13 @@ def index():
 @app.route("/map")
 def map():
     banner_data = load_json(
-        BANNER_FILE, default={"visible": BANNER_DEFAULT_VISIBLE, "text": BANNER_DEFAULT_TEXT}
+        config.BANNER_FILE, default={"visible": config.BANNER_DEFAULT_VISIBLE, "text": config.BANNER_DEFAULT_TEXT}
     )
 
     data = dict(
         announcements=get_future_announcements(),
         days=[(datetime.now() + timedelta(days=i)).strftime("%A") for i in range(7)],
-        maintenance_pcs=load_json(MAINTENANCE_FILE),
+        maintenance_pcs=load_json(config.MAINTENANCE_FILE),
         banner=banner_data,
         banner_visible=banner_data.get("visible", False),
         banner_text=banner_data.get("text", ""),
@@ -196,9 +196,9 @@ def map():
     )
 
     for label, url, key in [
-        ("offline", OFFLINE_LOCATIONS, "offline_pcs"),
-        ("online", ONLINE_LOCATIONS, "online_pcs"),
-        ("events", GET_EVENTS, "events_data"),
+        ("offline", config.OFFLINE_LOCATIONS, "offline_pcs"),
+        ("online", config.ONLINE_LOCATIONS, "online_pcs"),
+        ("events", config.GET_EVENTS, "events_data"),
     ]:
         try:
             resp = requests.get(url, verify=False, timeout=5)
@@ -233,13 +233,13 @@ def oauth_callback():
 
     try:
         token_resp = requests.post(
-            OAUTH_TOKEN_URL,
+            config.OAUTH_TOKEN_URL,
             data={
                 "grant_type": "authorization_code",
-                "client_id": OAUTH_CLIENT_ID,
-                "client_secret": OAUTH_CLIENT_SECRET,
+                "client_id": config.OAUTH_CLIENT_ID,
+                "client_secret": config.OAUTH_CLIENT_SECRET,
                 "code": code,
-                "redirect_uri": OAUTH_REDIRECT_URI,
+                "redirect_uri": config.OAUTH_REDIRECT_URI,
             },
             timeout=10,
         )
@@ -247,7 +247,7 @@ def oauth_callback():
         access_token = token_resp.json().get("access_token")
 
         user_resp = requests.get(
-            f"{OAUTH_API_BASE_URL}/v2/me",
+            f"{config.OAUTH_API_BASE_URL}/v2/me",
             headers={"Authorization": f"Bearer {access_token}"},
             timeout=10,
         )
@@ -394,7 +394,7 @@ def staff_dashboard():
     if session.get("user_kind") != "admin":
         log_action(f"Accesso staff non autorizzato da {session.get('user_login')} ({request.remote_addr})")
         return redirect(url_for("choose"))
-    return render_template("staff_dashboard.html", NAGIOS_URL=NAGIOS_URL)
+    return render_template("staff_dashboard.html", NAGIOS_URL=config.NAGIOS_URL)
 
 @app.route("/banner_management", methods=["GET", "POST"])
 def banner_management():
@@ -402,11 +402,11 @@ def banner_management():
         log_action(f"Tentativo gestione banner non autorizzato da {session.get('user_login')}")
         return "Unauthorized", 403
 
-    banner = load_json(BANNER_FILE, {"visible": BANNER_DEFAULT_VISIBLE, "text": BANNER_DEFAULT_TEXT})
+    banner = load_json(config.BANNER_FILE, {"visible": config.BANNER_DEFAULT_VISIBLE, "text": config.BANNER_DEFAULT_TEXT})
     if request.method == "POST":
         banner["visible"] = "show_banner" in request.form
         banner["text"] = request.form.get("banner_text", "")
-        save_json(BANNER_FILE, banner)
+        save_json(config.BANNER_FILE, banner)
         log_action(f"{session['user_login']} ha aggiornato il banner")
         return redirect(url_for("banner_management"))
 
@@ -427,7 +427,7 @@ def update_banner():
         "visible": "show_banner" in request.form,
         "text": request.form.get("banner_text", ""),
     }
-    save_json(BANNER_FILE, banner_settings)
+    save_json(config.BANNER_FILE, banner_settings)
     log_action(f"{session.get('user_login')} ha aggiornato il banner")
     return redirect(url_for("banner_management"))
 
@@ -488,5 +488,9 @@ def toggle_maintenance():
 
 # === Main ===
 if __name__ == "__main__":
-    app.run(host=HOST, port=PORT, ssl_context=(SSL_CERT_PATH, SSL_KEY_PATH), debug=True)
-
+    app.run(
+        host=config.HOST,
+        port=config.PORT,
+        ssl_context=(config.SSL_CERT_PATH, config.SSL_KEY_PATH),
+        debug=True,
+    )
