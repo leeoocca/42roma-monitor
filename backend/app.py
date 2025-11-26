@@ -488,5 +488,11 @@ def toggle_maintenance():
 
 # === Main ===
 if __name__ == "__main__":
-    app.run(host=HOST, port=PORT, ssl_context=(SSL_CERT_PATH, SSL_KEY_PATH), debug=True)
-
+    # Read debug mode from environment. Default to False in production.
+    debug_mode = os.getenv("FLASK_DEBUG", "false").lower() == "true"
+    app.run(
+        host=HOST,
+        port=PORT,
+        ssl_context=(SSL_CERT_PATH, SSL_KEY_PATH),
+        debug=debug_mode,
+    )
