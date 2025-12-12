@@ -13,8 +13,6 @@ import os
 import secrets
 import string
 from datetime import datetime, timedelta
-from pathlib import Path
-import difflib
 import requests
 import urllib3
 import yaml
