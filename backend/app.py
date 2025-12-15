@@ -146,7 +146,7 @@ def get_filtered_events():
     now = datetime.now()
     params = {
         "filter[begin_at]": f"{now.strftime('%Y-%m-%dT%H:%M:%S.000Z')},"
-                            f"{(now + timedelta(days=EVENT_LOOKAHEAD_DAYS)).strftime('%Y-%m-%dT%H:%M:%S.000Z')}"
+        f"{(now + timedelta(days=config.EVENT_LOOKAHEAD_DAYS)).strftime('%Y-%m-%dT%H:%M:%S.000Z')}"
     }
     headers = {"Authorization": f"Bearer {token}"}
     url = f"https://api.intra.42.fr/v2/campus/{config.CAMPUS_ID}/cursus/{config.CURSUS_ID}/events"
