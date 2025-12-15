@@ -20,4 +20,5 @@ COPY . .
 # Expose the internal app port
 EXPOSE 8000
 
-CMD ["uv", "run", "backend/app.py"]
+# Run with gunicorn in production
+CMD ["uv", "run", "gunicorn", "--bind", "0.0.0.0:8000", "backend.app:app"]
