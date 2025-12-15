@@ -1,4 +1,0 @@
-requests
-PyYaml
-Flask
-dotenv
