@@ -29,24 +29,36 @@ La dashboard **Monitor 42Roma** fornisce una vista in tempo reale sullo stato de
 ### Requisiti
 
 - Python 3.7+
+- uv (fast Python package installer and resolver)
 - Flask 3.x
 - Requests, PyYAML, python-dotenv
 - Certificati SSL (o disabilitazione esplicita in ambienti di test)
 
 ### Setup Rapido
 
-1. Copia `env.sample` in `.env` e aggiorna le variabili.
-2. Crea un virtualenv e installa i requisiti:
+1. Copia `.env.sample` in `.env` e aggiorna le variabili.
+2. Installa dipendenze con uv:
    ```bash
-   python3 -m venv venv
-   source venv/bin/activate
-   pip install -r requirements.txt
+   uv sync
    ```
 3. Avvia il server:
    ```bash
    python backend/app.py
    ```
 4. Accedi a `https://monitor.42roma.it` (o host locale) e fai login con account 42.
+
+### Sviluppo
+
+Per installare anche le dipendenze di sviluppo (ruff, linting):
+```bash
+uv sync --all-extras
+```
+
+Eseguire ruff per verificare la qualità del codice:
+```bash
+uv run ruff check .
+uv run ruff format .
+```
 
 ---
 
@@ -79,24 +91,36 @@ La dashboard **Monitor 42Roma** fornisce una vista in tempo reale sullo stato de
 ### Requirements
 
 - Python 3.7+
+- uv (fast Python package installer and resolver)
 - Flask 3.x
 - Requests, PyYAML, python-dotenv
 - SSL certificates or explicit verification override for test environments
 
 ### Quick Setup
 
-1. Copy `env.sample` to `.env` and adjust values.
-2. Create a virtualenv and install dependencies:
+1. Copy `.env.sample` to `.env` and adjust values.
+2. Install dependencies with uv:
    ```bash
-   python3 -m venv venv
-   source venv/bin/activate
-   pip install -r requirements.txt
+   uv sync
    ```
 3. Run the server:
    ```bash
    python backend/app.py
    ```
 4. Browse to `https://monitor.42roma.it` (or localhost) and authenticate with your 42 account.
+
+### Development
+
+To install development dependencies (ruff, linting tools):
+```bash
+uv sync --all-extras
+```
+
+Run ruff to check code quality:
+```bash
+uv run ruff check .
+uv run ruff format .
+```
 
 Happy monitoring! 🚀
 
