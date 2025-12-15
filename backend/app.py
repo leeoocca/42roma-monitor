@@ -564,6 +564,6 @@ if __name__ == "__main__":
     app.run(
         host=config.HOST,
         port=config.PORT,
-        ssl_context=(config.SSL_CERT_PATH, config.SSL_KEY_PATH),
+        ssl_context=config.SSL_CONTEXT,
         debug=DEBUG_MODE,
     )

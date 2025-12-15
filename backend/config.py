@@ -36,8 +36,9 @@ OAUTH_REDIRECT_URI = os.getenv(
 )
 
 # === SSL e host ===
-SSL_CERT_PATH = os.getenv("SSL_CERT_PATH", "/etc/ssl/42roma.it.crt")
-SSL_KEY_PATH = os.getenv("SSL_KEY_PATH", "/etc/ssl/wildcard.key")
+SSL_CERT_PATH = os.getenv("SSL_CERT_PATH", "")
+SSL_KEY_PATH = os.getenv("SSL_KEY_PATH", "")
+SSL_CONTEXT = (SSL_CERT_PATH, SSL_KEY_PATH) if SSL_CERT_PATH and SSL_KEY_PATH else None
 HOST = os.getenv("FLASK_HOST", "monitor.42roma.it")
 PORT = int(os.getenv("FLASK_PORT", "443"))
 
