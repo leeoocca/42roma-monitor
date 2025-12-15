@@ -28,7 +28,7 @@ La dashboard **Monitor 42Roma** fornisce una vista in tempo reale sullo stato de
 
 ### Requisiti
 
-- Python 3.7+
+- Python 3.11+
 - uv (fast Python package installer and resolver)
 - Flask 3.x
 - Requests, PyYAML, python-dotenv
@@ -90,7 +90,7 @@ uv run ruff format .
 
 ### Requirements
 
-- Python 3.7+
+- Python 3.11+
 - uv (fast Python package installer and resolver)
 - Flask 3.x
 - Requests, PyYAML, python-dotenv
