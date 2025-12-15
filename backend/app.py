@@ -436,7 +436,6 @@ def update_banner():
     log_action(f"{session.get('user_login')} ha aggiornato il banner")
     return redirect(url_for("banner_management"))
 
-def staff_maintenance():
 @app.route('/maintenance')
 def staff_maintenance():
     if 'user_login' not in session:
@@ -451,7 +450,6 @@ def staff_maintenance():
     maintenance_pcs = load_json(config.MAINTENANCE_FILE, default=[])
     return render_template('staff.html', maintenance_pcs=maintenance_pcs)
 
-def toggle_maintenance():
 @app.route('/toggle_maintenance', methods=['POST'])
 def toggle_maintenance():
     if 'user_login' not in session:
