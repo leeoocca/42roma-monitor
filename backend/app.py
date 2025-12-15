@@ -68,7 +68,7 @@ def require_dashboard_access():
         return None
 
     user_login = session.get("user_login")
-        if user_login not in config.AUTHORIZED_USERS:
+    if user_login not in config.AUTHORIZED_USERS:
         log_action(
             f"Accesso non autorizzato da {user_login or 'sconosciuto'} ({request.remote_addr})"
         )
@@ -119,7 +119,7 @@ def get_token():
         "client_secret": config.OAUTH_CLIENT_SECRET,
     }
     try:
-            resp = requests.post(config.OAUTH_TOKEN_URL, data=payload, timeout=10)
+        resp = requests.post(config.OAUTH_TOKEN_URL, data=payload, timeout=10)
         resp.raise_for_status()
         return resp.json().get("access_token")
     except requests.RequestException as e:
@@ -149,7 +149,7 @@ def get_filtered_events():
                             f"{(now + timedelta(days=EVENT_LOOKAHEAD_DAYS)).strftime('%Y-%m-%dT%H:%M:%S.000Z')}"
     }
     headers = {"Authorization": f"Bearer {token}"}
-        url = f"https://api.intra.42.fr/v2/campus/{config.CAMPUS_ID}/cursus/{config.CURSUS_ID}/events"
+    url = f"https://api.intra.42.fr/v2/campus/{config.CAMPUS_ID}/cursus/{config.CURSUS_ID}/events"
 
     try:
         resp = requests.get(url, headers=headers, params=params, timeout=10)
