@@ -43,7 +43,7 @@ La dashboard **Monitor 42Roma** fornisce una vista in tempo reale sullo stato de
    ```
 3. Avvia il server:
    ```bash
-   python backend/app.py
+   uv run backend/app.py
    ```
 4. Accedi a `https://monitor.42roma.it` (o host locale) e fai login con account 42.
 
@@ -105,7 +105,7 @@ uv run ruff format .
    ```
 3. Run the server:
    ```bash
-   python backend/app.py
+   uv run backend/app.py
    ```
 4. Browse to `https://monitor.42roma.it` (or localhost) and authenticate with your 42 account.
 

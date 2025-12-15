@@ -20,4 +20,4 @@ COPY . .
 # Expose the internal app port
 EXPOSE 8000
 
-CMD ["python", "backend/app.py"]
+CMD ["uv", "run", "backend/app.py"]
