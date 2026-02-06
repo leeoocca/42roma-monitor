@@ -68,7 +68,7 @@ def require_dashboard_access():
         return None
 
     user_login = session.get("user_login")
-        if user_login not in config.AUTHORIZED_USERS:
+    if user_login not in config.AUTHORIZED_USERS:
         log_action(
             f"Accesso non autorizzato da {user_login or 'sconosciuto'} ({request.remote_addr})"
         )
