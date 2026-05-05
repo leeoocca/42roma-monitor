@@ -76,7 +76,6 @@ def save_json(path, data):
         json.dump(data, f, indent=4)
 
 
-
 def require_dashboard_access():
     """Ensure the user is logged in and authorised to manage announcements."""
     if "user_login" not in session:
@@ -274,7 +273,6 @@ def login():
     return render_template("login.j2.html", auth_url=AUTH_URL)
 
 
-
 @app.route("/callback")
 def oauth_callback():
     code = request.args.get("code")
@@ -321,7 +319,6 @@ def choose():
     if "user_login" not in session:
         return redirect(url_for("login"))
     return render_template("choose.j2.html")
-
 
 
 @app.route("/announcement")
@@ -376,7 +373,6 @@ def create_announcement():
     return render_template("announcement.j2.html")
 
 
-
 @app.route("/announcements")
 def edit_announcements():
     guard = require_dashboard_access()
@@ -389,7 +385,6 @@ def edit_announcements():
     if not show_all:
         items = [item for item in items if item.get("created_by") == user_login]
     return render_template("edit_announcements.j2.html", announcements=items)
-
 
 
 @app.route("/edit_announcement/<announcement_id>", methods=["GET", "POST"])
@@ -451,7 +446,6 @@ def edit_announcement(announcement_id):
     return render_template("edit_announcement.j2.html", announcement=announcement)
 
 
-
 @app.route("/staff")
 def staff_dashboard():
     if session.get("user_kind") != "admin":
@@ -460,7 +454,6 @@ def staff_dashboard():
         )
         return redirect(url_for("choose"))
     return render_template("staff_dashboard.j2.html", NAGIOS_URL=config.NAGIOS_URL)
-
 
 
 @app.route("/banner_management", methods=["GET", "POST"])
