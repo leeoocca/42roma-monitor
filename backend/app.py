@@ -76,7 +76,6 @@ def save_json(path, data):
         json.dump(data, f, indent=4)
 
 
-
 def require_dashboard_access():
     """Ensure the user is logged in and authorised to manage announcements."""
     if "user_login" not in session:
