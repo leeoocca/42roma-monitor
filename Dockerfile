@@ -5,9 +5,14 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
-# Install runtime dependencies
-COPY requirements.txt ./
-RUN pip install --no-cache-dir -r requirements.txt
+# Install uv
+RUN pip install --no-cache-dir uv
+
+# Copy dependency files
+COPY pyproject.toml uv.lock ./
+
+# Install dependencies with uv
+RUN uv sync --frozen --no-dev
 
 # Copy project
 COPY . .
@@ -15,4 +20,5 @@ COPY . .
 # Expose the internal app port
 EXPOSE 8000
 
-CMD ["python", "backend/app.py"]
+# Run with gunicorn in production
+CMD ["uv", "run", "gunicorn", "--bind", "0.0.0.0:8000", "backend.app:app"]

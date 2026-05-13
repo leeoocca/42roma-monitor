@@ -18,7 +18,7 @@ import requests
 import urllib3
 import yaml
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
-import config
+from . import config
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -515,13 +515,7 @@ def staff_maintenance():
             f"Tentativo di accesso non autorizzato alla pagina staff da {session.get('user_login')} (IP: {request.remote_addr})"
         )
         return "Unauthorized", 403
-    maintenance_pcs = []
-    if os.path.exists("maintenance.json"):
-        with open("maintenance.json", "r") as f:
-            try:
-                maintenance_pcs = json.load(f)
-            except json.JSONDecodeError:
-                maintenance_pcs = []
+    maintenance_pcs = load_json(config.MAINTENANCE_FILE, default=[])
     return render_template("staff.j2.html", maintenance_pcs=maintenance_pcs)
 
 
@@ -542,13 +536,7 @@ def toggle_maintenance():
     action = request.form.get("action", "add")
     if not pc_id:
         return jsonify({"error": "No PC ID provided"}), 400
-    maintenance_pcs = []
-    if os.path.exists("maintenance.json"):
-        with open("maintenance.json", "r") as f:
-            try:
-                maintenance_pcs = json.load(f)
-            except json.JSONDecodeError:
-                maintenance_pcs = []
+    maintenance_pcs = load_json(config.MAINTENANCE_FILE, default=[])
     if action == "remove" and pc_id in maintenance_pcs:
         maintenance_pcs.remove(pc_id)
         logger.info(
@@ -559,8 +547,7 @@ def toggle_maintenance():
         logger.info(
             f"{session.get('user_login')} ha aggiunto {pc_id} alla manutenzione"
         )
-    with open("maintenance.json", "w") as f:
-        json.dump(maintenance_pcs, f)
+    save_json(config.MAINTENANCE_FILE, maintenance_pcs)
     return jsonify({"success": True, "maintenance_pcs": maintenance_pcs})
 
 
@@ -569,6 +556,6 @@ if __name__ == "__main__":
     app.run(
         host=config.HOST,
         port=config.PORT,
-        ssl_context=(config.SSL_CERT_PATH, config.SSL_KEY_PATH),
+        ssl_context=config.SSL_CONTEXT,
         debug=DEBUG_MODE,
     )
